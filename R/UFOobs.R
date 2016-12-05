@@ -11,6 +11,11 @@
 #' 
 UFOobs <- function(year=NA, month=NA, year_end= NA, month_end = NA) {
   if (is.na(year_end) | is.na(month_end)){
+    if (nchar(month)<2){
+      month<-paste0(0,as.integer(month))
+    }else{
+      month<-month
+    }
     url <- paste0("http://www.nuforc.org/webreports/ndxe", year, month, ".html", sep="")
     resp<-htmltab(url, which=1, encoding = "UTF-8")
     resp$Date<-as.Date(resp$`Date / Time`, format="%m/%d/%y %H:%M")
@@ -46,5 +51,4 @@ UFOobs <- function(year=NA, month=NA, year_end= NA, month_end = NA) {
     return(output)
   }
 }
-
 
