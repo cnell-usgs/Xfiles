@@ -2,9 +2,12 @@
 #' 
 #' This function returns a count of the total monthly UFO sightings for a given month & year, or date range.
 #' This defaults to returning a dataframe with all UFO sightings by month for all years available.
+#' date must be in format %Y-%mi.e. 2001-01
 
 UFOcount <- function(date=NA){
   library(httr)
+  library(dplyr)
+  library(zoo)
   url_month<-"http://www.nuforc.org/webreports/ndxevent.html"##all the data if there, want to pull only for the month give
   lines<-readLines(url_month)
   date_pattern<-'<FONT style=FONT-SIZE:11pt FACE=\"Calibri\" COLOR=#000000>([^<]*)</TD>'
@@ -26,10 +29,10 @@ UFOcount <- function(date=NA){
   ufos_month<-data.frame(Date = sapply(strsplit(resultdate, ">", fixed=TRUE),"[[",2),
                          UFOs = result)##make new data frame with UFO sightings by month
   ufos_month$UFOs<-as.integer(as.character(ufos_month$UFOs))
-  
+  ufos_month$Date<-as.Date(as.yearmon(as.character(ufos_month$Date), "%m/%Y"), format="%m/%d/%Y")
   if (!is.na(date)) {
     ufos_month<-ufos_month%>%
-      filter(ufos_month$Date == 'date')
+      filter(ufos_month$Date == as.Date(paste0(date,"-01")))
     return(ufos_month)
   } else{
   return(ufos_month)
