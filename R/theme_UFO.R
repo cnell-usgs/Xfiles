@@ -52,5 +52,3 @@ theme_UFO<-function(base_size = 18, base_family = "Helvetica", legend.location =
   )
     
 }
-ggplot(df, aes(x=reorder(State,UFOs), y=UFOs))+geom_point(color="green", shape=8, size=3)+theme_UFO()+
-  labs(x="State", y="Total UFO sightings")
