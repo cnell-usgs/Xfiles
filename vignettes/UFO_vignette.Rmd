@@ -1,0 +1,53 @@
+---
+title: "Accessing UFO sightings data"
+author: "Colleen Nell"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Accessing UFO sightings data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package currently provides 2 functions to gather data on UFO sightings from the National UFO Report Center (www.nuforc.org). These functions take dates and return sightings data. 
+
+To install this package:  
+```{r, eval=F}
+install_github("collnell/Xfiles")
+library(Xfiles)
+
+```  
+```{r, echo=F}
+library(Xfiles)
+
+```  
+## UFOcount()  
+This function returns a dataframe containing the total count of UFO observations for a given month & year. Dates need to be entered in a 'YYYY-mm' format
+
+```{r}
+UFOcount(date='2016-11')
+
+```  
+If no date is provided, by default all monthly observations on record are returned by date.  
+```{r}
+df<-UFOcount()
+str(df)
+
+```  
+The UFO records contain 891 month records. This includes data from WAY back, which might not be very reliable. Consistent monthly records on UFO sightings begin around 1950.  
+```{r}
+df<-filter(df, df$Date>=as.Date('1950-01-01'))
+str(df)
+
+```  
+The theme_UFO() theme for ggplot2 may come in handy in plotting sightings data:  
+
+UFO monthly sightings since 1950  
+```{r} 
+ggplot(df, aes(x=Date, y=UFOs))+geom_point(size=1, shape=8, color="green")+theme_UFO()
+```
+
+  
+  
+  
+  
