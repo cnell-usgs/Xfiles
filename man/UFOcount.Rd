@@ -9,6 +9,7 @@ UFOcount(date = NA)
 \description{
 This function returns a count of the total monthly UFO sightings for a given month & year, or date range.
 This defaults to returning a dataframe with all UFO sightings by month for all years available.
-date must be in format %Y-%m-%d i.e. 2001-01-28
+date must be in format %Y-%mi.e. 2001-01
+For more detailed data on individual observations see UFOobs()
 }
 
