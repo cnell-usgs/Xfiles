@@ -12,15 +12,65 @@ vignette: >
 This package currently provides 2 functions to gather data on UFO sightings from the National UFO Report Center (www.nuforc.org). These functions take dates and return sightings data. 
 
 To install this package:  
-```{r, eval=F}
+```{r, eval=T}
+library(devtools)
+library(ggplot2)
+
 install_github("collnell/Xfiles")
 library(Xfiles)
 
-```  
+```   
+
 ```{r, echo=F}
 library(Xfiles)
 
 ```  
+
+```{r, include=F}
+UFOobs <- function(year=NA, month=NA, year_end= NA, month_end = NA) {
+  if (is.na(year_end) | is.na(month_end)){
+    if (nchar(month)<2){
+      month<-paste0(0,as.integer(month))
+    }else{
+      month<-month
+    }
+    url <- paste0("http://www.nuforc.org/webreports/ndxe", year, month, ".html", sep="")
+    resp<-htmltab(url, which=1, encoding = "UTF-8")
+    resp$Date<-as.Date(resp$`Date / Time`, format="%m/%d/%y %H:%M")
+    resp$Month<-month(resp$Date)
+    resp$Year<-year(resp$Date)
+    resp<-resp%>%
+      select(-Posted, -`Date / Time`)
+    return(resp)
+    
+  } else {
+    date_start <- as.Date(paste0(year,"-",month,"-01"))
+    date_end <- as.Date(paste0(year_end,"-",month_end,"-01"))
+    
+    mos<-seq(ymd(date_start),ymd(date_end), by="month")
+    months<-data.frame(dates=mos)
+    months$y=as.integer(year(months$dates))
+    months$m<-ifelse(nchar(as.integer(month(months$dates)))<2, 
+                     paste0(0,as.integer(month(months$dates))),as.integer(month(months$dates)))
+    mot<-paste0(months$y,months$m)
+    
+    functest<-function(mot){
+      url <- paste0("http://www.nuforc.org/webreports/ndxe", mot, ".html", sep="")
+      resp<-htmltab(url, which=1, encoding = "UTF-8")
+      return(resp)
+    }
+    
+    output<-do.call(rbind, lapply(mot, functest))
+    output$Date<-as.Date(output$`Date / Time`, format="%m/%d/%y %H:%M")
+    output$Month<-month(output$Date)
+    output$Year<-year(output$Date)
+    output<-output%>%
+      select(-Posted, -`Date / Time`)
+    return(output)
+  }
+}
+
+```
 ## UFOcount()  
 This function returns a dataframe containing the total count of UFO observations for a given month & year. Dates need to be entered in a 'YYYY-mm' format
 
@@ -43,9 +93,59 @@ str(df)
 The theme_UFO() theme for ggplot2 may come in handy in plotting sightings data:  
 
 UFO monthly sightings since 1950  
-```{r} 
+```{r,} 
 ggplot(df, aes(x=Date, y=UFOs))+geom_point(size=1, shape=8, color="green")+theme_UFO()
 ```
+```{r}
+df$year<-as.integer(year(df$Date))
+df$month<-as.integer(month(df$Date))
+df<-top_n(df,25)
+
+ggplot(df, aes(x=month, y=UFOs, group=year, color=year))+geom_line()+theme_UFO()+scale_color_continuous(low="greenyellow", high="green4")
+
+```
+
+
+##UFOobs()  
+This function gathers higher resolution data on each UFO sighting for a given month and year. Data returned include: Date, City, State, Shape, and a Summary. 
+
+```{r}
+df<-UFOobs(year=1980, month=01)
+str(df)
+
+```  
+Observation data can also be drawn for a date range. Warning: this is a larger dataset and may take a while if requesting a large date range. It is adviseable to use to UFOcount() function to consider the number of observations in the data first.  
+
+```{r, eval=F}
+df<-UFOobs(year=2014, month=01, year_end= 2016, month_end = 12)
+
+se <- function(x) sd(x)/sqrt(length(x))
+
+df<-df%>%
+  select(Date, State, year)%>%
+  group_by(State, year)%>%
+  summarize(UFOs = length(Date))%>%
+  group_by(State)%>%
+  summarize(UFO_mean = mean(UFOs), UFO_se = se(UFOs))
+
+```  
+
+```{r, include=F}
+df<-read.csv("UFOs_2000s.csv")
+
+```
+
+```{r}
+##average number of UFO sightings per year by state
+ggplot(df, aes(x=reorder(State,UFO_mean), y=UFO_mean))+
+  geom_bar(stat="identity", color="green", fill="black")+
+  geom_errorbar(aes(ymin=UFO_mean - UFO_se, ymax=UFO_mean + UFO_se), width=.1, color="white")+
+  labs(x="State", y="Average Annual UFO sightings")+
+  theme_UFO()
+
+
+```
+
 
   
   

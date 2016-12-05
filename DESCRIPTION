@@ -3,7 +3,7 @@ Title: Accessing UFO sightings data
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: This package provides a gateway to UFO sightings from the National UFO Reporting Center (www.nuforc.org). Sightings may be searched for by location and date. 
-Depends: R (>= 3.3.2), lubridate, dplyr, htmltab, zoo
+Depends: R (>= 3.3.2), lubridate, dplyr, htmltab, zoo, ggplot2
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

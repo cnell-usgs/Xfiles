@@ -1,8 +1,8 @@
 #' Function to pull detailed UFO sightings data by date or date range
-#' @param year
-#' @param month
-#' @param year_end
-#' @param year_start
+#' @param year year of interest
+#' @param month month of interest
+#' @param year_end end year in date range
+#' @param year_start end month in date range
 #' year and month are required to return UFO sightings data
 #' If no values are provided for year_end or year_start, UFO sightings are returned for a single month
 #' 
