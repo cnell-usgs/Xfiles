@@ -1,0 +1,6 @@
+{
+  "name": "Xfiles",
+  "tagline": "UFO sightings package",
+  "body": "# Xfiles\r\nUFO sightings package\r\n\r\nThis package provides direct R access to UFO sightings data from the [National UFO Reporting Center](http://www.nuforc.org/). \r\n\r\n**Functions**\r\n\r\nUFOcount():\r\n- Returns the total number of UFO sightings for a given month and year.\r\n- Defaults to returning monthly counts for all years of data.  \r\n\r\nExample:\r\nufos<-UFOcount()  \r\nufos<-ufos%>%filter(ufos$year>=1950)  \r\n\r\nggplot(ufos, aes(x=Date, y=UFOs))+geom_point(size=1)+  \r\n  theme_minimal()+labs(x=\"Date\", y=\"Monthly UFO sightings\")\r\n\r\nUFOobs():\r\n- Get detailed data on UFO sightings for given month & year or range.  \r\n- Data includes Date + Time, State, City, Shape, Duration, and Description of the sightings.  \r\n\r\nExample:\r\nUFOobs(year = 1988, month = 10)  \r\n\r\nDate range:\r\nUFOS_2015<-UFOobs(year = 2015, month = 01, year_end = 2015, month_end= 12)\r\n\r\nWarning: there is a high volume of UFO sightings data. It is suggested to first use UFOcount() to assess the volume of data being requested as it may take a while.  \r\n\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
